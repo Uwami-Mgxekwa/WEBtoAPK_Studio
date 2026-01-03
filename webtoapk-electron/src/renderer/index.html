@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEBtoAPK Studio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>WEBtoAPK Studio</h1>
+            <p>Convert your web applications to Android APK files</p>
+        </header>
+
+        <main class="main-content">
+            <div class="step-container">
+                <div class="step active" id="step1">
+                    <h2>Step 1: Web App Configuration</h2>
+                    <div class="form-group">
+                        <label for="appName">App Name:</label>
+                        <input type="text" id="appName" placeholder="My Web App" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="packageName">Package Name:</label>
+                        <input type="text" id="packageName" placeholder="com.example.myapp" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="webUrl">Web URL:</label>
+                        <input type="url" id="webUrl" placeholder="https://example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="iconPath">App Icon:</label>
+                        <div class="file-input-group">
+                            <input type="text" id="iconPath" placeholder="Select icon file..." readonly>
+                            <button type="button" id="selectIcon">Browse</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="step2">
+                    <h2>Step 2: Web Preview</h2>
+                    <div class="preview-container">
+                        <div class="preview-controls">
+                            <button id="loadPreview">Load Preview</button>
+                            <button id="refreshPreview">Refresh</button>
+                        </div>
+                        <div class="preview-frame">
+                            <iframe id="webPreview" src="about:blank"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="step3">
+                    <h2>Step 3: APK Generation</h2>
+                    <div class="generation-controls">
+                        <div class="form-group">
+                            <label for="outputPath">Output Directory:</label>
+                            <div class="file-input-group">
+                                <input type="text" id="outputPath" placeholder="Select output directory..." readonly>
+                                <button type="button" id="selectOutput">Browse</button>
+                            </div>
+                        </div>
+                        <button id="generateAPK" class="generate-btn" disabled>Generate APK</button>
+                    </div>
+                    <div class="progress-container" id="progressContainer" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">Preparing...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button id="prevStep" disabled>Previous</button>
+                <button id="nextStep">Next</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
