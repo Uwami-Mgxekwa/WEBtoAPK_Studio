@@ -5,6 +5,23 @@ const fs = require('fs-extra');
 let mainWindow;
 
 function createWindow() {
+  // Determine the correct preload script path
+  const preloadPath = app.isPackaged 
+    ? path.join(__dirname, 'preload.js')
+    : path.join(__dirname, 'preload.js');
+    
+  console.log('App is packaged:', app.isPackaged);
+  console.log('__dirname:', __dirname);
+  console.log('Preload script path:', preloadPath);
+  
+  // Check if preload file exists
+  const fs = require('fs');
+  if (fs.existsSync(preloadPath)) {
+    console.log('✓ Preload script found');
+  } else {
+    console.log('✗ Preload script NOT found at:', preloadPath);
+  }
+
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -13,7 +30,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js'),
+      preload: preloadPath,
       enableRemoteModule: false,
       webSecurity: true
     },
@@ -21,17 +38,14 @@ function createWindow() {
     show: false
   });
 
-  console.log('Preload script path:', path.join(__dirname, 'preload.js'));
-
   mainWindow.loadFile(path.join(__dirname, 'renderer/index.html'));
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
 
-  if (process.argv.includes('--dev')) {
-    mainWindow.webContents.openDevTools();
-  }
+  // Always open DevTools to see console output
+  mainWindow.webContents.openDevTools();
 }
 
 // App event handlers

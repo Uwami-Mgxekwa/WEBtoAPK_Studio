@@ -2,6 +2,8 @@ node_modules/
 dist/
 build/
 release/
+output/
+build_*/
 *.log
 .DS_Store
 Thumbs.db
@@ -14,6 +16,11 @@ Thumbs.db
 *.rpm
 *.snap
 
+# Temporary build directories (pattern matching)
+build_*
+temp_build_*
+electron_build_*
+
 # OS generated files
 .DS_Store
 .DS_Store?
@@ -22,3 +29,7 @@ Thumbs.db
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Package backup files
+package.json.bak
+package.json.tmp

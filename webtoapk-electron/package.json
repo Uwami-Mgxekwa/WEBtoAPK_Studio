@@ -36,7 +36,14 @@
     },
     "files": [
       "src/**/*",
-      "assets/**/*"
+      "assets/**/*",
+      "!src/**/*.ts"
+    ],
+    "extraFiles": [
+      {
+        "from": "src/preload.js",
+        "to": "preload.js"
+      }
     ]
   }
 }
