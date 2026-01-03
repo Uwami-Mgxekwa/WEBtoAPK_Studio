@@ -1,1 +1,14 @@
 /dist/
+
+# Electron build artifacts
+webtoapk-electron/node_modules/
+webtoapk-electron/dist/
+webtoapk-electron/build/
+webtoapk-electron/release/
+webtoapk-electron/*.exe
+webtoapk-electron/*.dmg
+webtoapk-electron/*.AppImage
+
+# OS generated files
+.DS_Store
+Thumbs.db
