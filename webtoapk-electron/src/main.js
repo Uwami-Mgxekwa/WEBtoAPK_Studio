@@ -13,11 +13,15 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      enableRemoteModule: false,
+      webSecurity: true
     },
     icon: path.join(__dirname, '../assets/icon.png'),
     show: false
   });
+
+  console.log('Preload script path:', path.join(__dirname, 'preload.js'));
 
   mainWindow.loadFile(path.join(__dirname, 'renderer/index.html'));
 

@@ -560,9 +560,17 @@ class WebToAPKStudio {
 // Initialize the application
 let app;
 document.addEventListener('DOMContentLoaded', () => {
+    // Debug: Check what's available in window
+    console.log('Window object keys:', Object.keys(window));
+    console.log('electronAPI available:', typeof window.electronAPI);
+    console.log('electronAPI object:', window.electronAPI);
+    
     // Check if electronAPI is available
     if (typeof window.electronAPI === 'undefined') {
         console.warn('electronAPI not available - some features may not work');
+        console.log('Running in development mode or preload script failed to load');
+    } else {
+        console.log('electronAPI loaded successfully');
     }
     
     app = new WebToAPKStudio();

@@ -1,5 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
+console.log('Preload script is loading...');
+
 contextBridge.exposeInMainWorld('electronAPI', {
   selectFolder: () => ipcRenderer.invoke('select-folder'),
   selectFile: (filters) => ipcRenderer.invoke('select-file', filters),
@@ -8,3 +10,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   writeFile: (filePath, content) => ipcRenderer.invoke('write-file', filePath, content),
   openExternal: (url) => ipcRenderer.invoke('open-external', url)
 });
+
+console.log('electronAPI exposed to renderer');
