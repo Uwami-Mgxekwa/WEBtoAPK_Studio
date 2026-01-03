@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs-extra');
 
@@ -85,5 +85,14 @@ ipcMain.handle('write-file', async (event, filePath, content) => {
     return true;
   } catch (error) {
     throw new Error(`Failed to write file: ${error.message}`);
+  }
+});
+
+ipcMain.handle('open-external', async (event, url) => {
+  try {
+    await shell.openExternal(url);
+    return true;
+  } catch (error) {
+    throw new Error(`Failed to open external link: ${error.message}`);
   }
 });

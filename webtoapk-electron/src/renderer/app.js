@@ -24,6 +24,12 @@ class WebToAPKStudio {
         // APK generation
         document.getElementById('generateAPK').addEventListener('click', () => this.generateAPK());
 
+        // Branding link
+        document.getElementById('brelinxLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.openExternalLink('https://brelinx.com');
+        });
+
         // Form validation
         this.setupFormValidation();
     }
@@ -213,6 +219,12 @@ class WebToAPKStudio {
 
     showSuccess(message) {
         alert('Success: ' + message);
+    }
+
+    openExternalLink(url) {
+        // In Electron, we need to use the shell module to open external links
+        // This will be handled by the main process
+        window.electronAPI.openExternal(url);
     }
 
     sleep(ms) {

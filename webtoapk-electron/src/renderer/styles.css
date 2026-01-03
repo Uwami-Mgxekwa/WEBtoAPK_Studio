@@ -242,3 +242,29 @@ body {
     background: #ffffff;
     color: #cccccc;
 }
+
+.app-footer {
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 20px;
+}
+
+.footer-branding {
+    font-size: 0.85rem;
+    color: #666666;
+    font-weight: 500;
+    text-transform: lowercase;
+    letter-spacing: 0.5px;
+}
+.footer-branding a {
+    color: #22c55e;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.footer-branding a:hover {
+    color: #16a34a;
+    text-decoration: underline;
+}
