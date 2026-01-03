@@ -4,55 +4,75 @@ echo  WEBtoAPK Studio - Build Script
 echo ========================================
 echo.
 
-echo [1/4] Killing all Electron processes...
+echo [1/5] Killing all Electron and Node processes...
 echo.
 
-REM Kill Electron processes by name
+REM Kill Electron processes by name (multiple variations)
 taskkill /f /im "electron.exe" 2>nul
 taskkill /f /im "webtoapk-studio.exe" 2>nul
 taskkill /f /im "Electron.exe" 2>nul
+taskkill /f /im "ELECTRON.EXE" 2>nul
 
 REM Kill any Node.js processes that might be related
 taskkill /f /im "node.exe" 2>nul
+taskkill /f /im "npm.exe" 2>nul
 
-REM Kill processes by window title (if any Electron apps are running)
-for /f "tokens=2 delims=," %%i in ('tasklist /fo csv ^| findstr /i "electron"') do (
-    echo Killing process: %%i
-    taskkill /f /pid %%i 2>nul
-)
+REM Kill any processes with "webtoapk" in the name
+wmic process where "name like '%%electron%%'" delete 2>nul
+wmic process where "name like '%%webtoapk%%'" delete 2>nul
 
-REM Wait a moment for processes to fully terminate
-timeout /t 2 /nobreak >nul
+REM Kill any processes using the output directory
+for /f "tokens=2" %%i in ('handle.exe "webtoapk-studio" 2^>nul') do taskkill /f /pid %%i 2>nul
 
-echo [2/4] Cleaning old build directories...
+echo Waiting for processes to terminate...
+timeout /t 5 /nobreak >nul
+
+echo [2/5] Force unlocking files...
 echo.
 
-REM Remove old build directories
-if exist "dist" (
-    echo Removing dist folder...
-    rmdir /s /q "dist" 2>nul
-)
+REM Try to unlock files using PowerShell
+powershell -Command "Get-Process | Where-Object {$_.ProcessName -match 'electron|webtoapk|node'} | Stop-Process -Force" 2>nul
 
-if exist "build" (
-    echo Removing build folder...
-    rmdir /s /q "build" 2>nul
-)
+REM Wait again
+timeout /t 3 /nobreak >nul
 
-if exist "release" (
-    echo Removing release folder...
-    rmdir /s /q "release" 2>nul
-)
-
-if exist "output" (
-    echo Removing output folder...
-    rmdir /s /q "output" 2>nul
-)
-
-echo [3/4] Building Electron application...
+echo [3/5] Cleaning old build directories...
 echo.
+
+REM Force remove directories with retry logic
+for %%d in (dist build release output) do (
+    if exist "%%d" (
+        echo Removing %%d folder...
+        rmdir /s /q "%%d" 2>nul
+        if exist "%%d" (
+            echo Retrying %%d removal...
+            timeout /t 2 /nobreak >nul
+            rmdir /s /q "%%d" 2>nul
+        )
+        if exist "%%d" (
+            echo Force removing %%d with PowerShell...
+            powershell -Command "Remove-Item -Path '%%d' -Recurse -Force -ErrorAction SilentlyContinue" 2>nul
+        )
+    )
+)
+
+echo [4/5] Building Electron application...
+echo.
+
+REM Change output directory name to avoid conflicts
+set BUILD_DIR=build_%RANDOM%
+echo Building to directory: %BUILD_DIR%
+
+REM Update package.json temporarily
+powershell -Command "(Get-Content package.json) -replace 'out=output', 'out=%BUILD_DIR%' | Set-Content package.json.tmp"
+move package.json package.json.bak
+move package.json.tmp package.json
 
 REM Run npm package command
 call npm run package
+
+REM Restore original package.json
+move package.json.bak package.json
 
 REM Check if the build was successful
 if %ERRORLEVEL% EQU 0 (
@@ -62,10 +82,14 @@ if %ERRORLEVEL% EQU 0 (
     echo ========================================
     echo.
     echo Your exe file is ready at:
-    echo output\webtoapk-studio-win32-x64\webtoapk-studio.exe
+    echo %BUILD_DIR%\webtoapk-studio-win32-x64\webtoapk-studio.exe
     echo.
-    echo [4/4] Opening build directory...
-    explorer "output\webtoapk-studio-win32-x64"
+    echo [5/5] Opening build directory...
+    explorer "%BUILD_DIR%\webtoapk-studio-win32-x64"
+    echo.
+    echo Renaming build directory to 'output'...
+    if exist "output" rmdir /s /q "output" 2>nul
+    rename "%BUILD_DIR%" "output" 2>nul
     echo.
     echo Press any key to exit...
     pause >nul
@@ -77,6 +101,31 @@ if %ERRORLEVEL% EQU 0 (
     echo.
     echo There was an error during the build process.
     echo Check the output above for details.
+    echo.
+    echo Trying alternative approach...
+    echo Building to temporary directory...
+    
+    REM Try building to a completely different location
+    set TEMP_BUILD=C:\temp\webtoapk_build_%RANDOM%
+    mkdir "%TEMP_BUILD%" 2>nul
+    
+    powershell -Command "(Get-Content package.json) -replace 'out=.*', 'out=%TEMP_BUILD%' | Set-Content package.json"
+    
+    call npm run package
+    
+    if %ERRORLEVEL% EQU 0 (
+        echo.
+        echo Alternative build successful!
+        echo Copying files back...
+        xcopy "%TEMP_BUILD%\webtoapk-studio-win32-x64" "output\" /E /I /Y
+        rmdir /s /q "%TEMP_BUILD%" 2>nul
+        explorer "output"
+    ) else (
+        echo.
+        echo Alternative build also failed.
+        echo Please close any running Electron apps and try again.
+    )
+    
     echo.
     echo Press any key to exit...
     pause >nul

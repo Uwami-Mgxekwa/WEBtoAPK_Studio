@@ -6,6 +6,7 @@ webtoapk-electron/dist/
 webtoapk-electron/build/
 webtoapk-electron/release/
 webtoapk-electron/output/
+webtoapk-electron/build_27864/
 webtoapk-electron/*.exe
 webtoapk-electron/*.dmg
 webtoapk-electron/*.AppImage
