@@ -126,13 +126,11 @@ public class App extends javax.swing.JFrame {
         jLabel9.setForeground(new java.awt.Color(0, 0, 0));
         jLabel9.setText("App ID ");
 
-        jTextField3.setText("jTextField1");
-
         jLabel10.setFont(new java.awt.Font("Yu Gothic UI", 0, 12)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(0, 0, 0));
         jLabel10.setText("Splash Screen");
 
-        jButton3.setText("jButton2");
+        jButton3.setText("Choose File");
 
         jLabel11.setText("Permissions");
 
