@@ -7,80 +7,302 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="app-container">
-        <header class="app-header">
-            <h1>WEBtoAPK Studio</h1>
-            <p>Convert your web applications to Android APK files</p>
+    <!-- Dashboard Screen -->
+    <div class="screen active" id="dashboardScreen">
+        <header class="top-bar">
+            <div class="logo">WEBtoAPK Studio</div>
+            <div class="top-bar-actions">
+                <button class="icon-btn" id="settingsBtn">⚙️</button>
+                <button class="icon-btn" id="profileBtn">👤</button>
+            </div>
         </header>
 
-        <main class="main-content">
-            <div class="step-container">
-                <div class="step active" id="step1">
-                    <h2>Step 1: Web App Configuration</h2>
-                    <div class="form-group">
-                        <label for="appName">App Name:</label>
-                        <input type="text" id="appName" placeholder="My Web App" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="packageName">Package Name:</label>
-                        <input type="text" id="packageName" placeholder="com.example.myapp" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="webUrl">Web URL:</label>
-                        <input type="url" id="webUrl" placeholder="https://example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="iconPath">App Icon:</label>
-                        <div class="file-input-group">
-                            <input type="text" id="iconPath" placeholder="Select icon file..." readonly>
-                            <button type="button" id="selectIcon">Browse</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="step" id="step2">
-                    <h2>Step 2: Web Preview</h2>
-                    <div class="preview-container">
-                        <div class="preview-controls">
-                            <button id="loadPreview">Load Preview</button>
-                            <button id="refreshPreview">Refresh</button>
-                        </div>
-                        <div class="preview-frame">
-                            <iframe id="webPreview" src="about:blank"></iframe>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="step" id="step3">
-                    <h2>Step 3: APK Generation</h2>
-                    <div class="generation-controls">
-                        <div class="form-group">
-                            <label for="outputPath">Output Directory:</label>
-                            <div class="file-input-group">
-                                <input type="text" id="outputPath" placeholder="Select output directory..." readonly>
-                                <button type="button" id="selectOutput">Browse</button>
-                            </div>
-                        </div>
-                        <button id="generateAPK" class="generate-btn" disabled>Generate APK</button>
-                    </div>
-                    <div class="progress-container" id="progressContainer" style="display: none;">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressFill"></div>
-                        </div>
-                        <div class="progress-text" id="progressText">Preparing...</div>
-                    </div>
-                </div>
+        <main class="dashboard-content">
+            <div class="main-action-area">
+                <button class="create-new-btn" id="createNewApp">
+                    <span class="btn-icon">+</span>
+                    <span class="btn-text">Create New App</span>
+                </button>
             </div>
 
-            <div class="navigation">
-                <button id="prevStep" disabled>Previous</button>
-                <button id="nextStep">Next</button>
+            <div class="projects-section">
+                <h2>Your Projects</h2>
+                <div class="projects-grid" id="projectsGrid">
+                    <!-- Projects will be dynamically added here -->
+                </div>
             </div>
         </main>
 
         <footer class="app-footer">
             <div class="footer-branding">powered by <a href="#" id="brelinxLink">brelinx</a></div>
         </footer>
+    </div>
+
+    <!-- Wizard Screen -->
+    <div class="screen" id="wizardScreen">
+        <header class="wizard-header">
+            <button class="back-to-dashboard" id="backToDashboard">← Dashboard</button>
+            <div class="wizard-progress">
+                <div class="progress-step active" data-step="1">1</div>
+                <div class="progress-step" data-step="2">2</div>
+                <div class="progress-step" data-step="3">3</div>
+                <div class="progress-step" data-step="4">4</div>
+            </div>
+        </header>
+
+        <main class="wizard-content">
+            <!-- Step 1: Core Identity -->
+            <div class="wizard-step active" id="wizardStep1">
+                <h2>Step 1: Core Identity</h2>
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="websiteUrl">Website URL *</label>
+                        <div class="url-input-group">
+                            <input type="url" id="websiteUrl" placeholder="https://example.com" required>
+                            <button type="button" id="verifyUrl" class="verify-btn">Verify URL</button>
+                        </div>
+                        <div class="url-status" id="urlStatus"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appName">App Name *</label>
+                        <input type="text" id="appName" placeholder="My Awesome App" required>
+                        <small>The name displayed on Android home screen</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="packageName">Package Name *</label>
+                        <div class="package-input-group">
+                            <input type="text" id="packageName" placeholder="com.example.myapp" required>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="customPackage">
+                                <span class="toggle-slider"></span>
+                                Custom Package Name
+                            </label>
+                        </div>
+                        <small>Unique identifier for your app</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="versionNumber">Version Number</label>
+                        <input type="text" id="versionNumber" value="1.0.0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Branding & Assets -->
+            <div class="wizard-step" id="wizardStep2">
+                <h2>Step 2: Branding & Assets</h2>
+                <div class="form-section">
+                    <div class="assets-row">
+                        <div class="asset-group">
+                            <h3>App Icon</h3>
+                            <div class="icon-preview" id="iconPreview">
+                                <div class="placeholder">512x512</div>
+                            </div>
+                            <button type="button" id="uploadIcon" class="upload-btn">Upload Icon</button>
+                            <small>Recommended 1024x1024 PNG</small>
+                        </div>
+
+                        <div class="asset-group">
+                            <h3>Splash Screen</h3>
+                            <div class="splash-preview" id="splashPreview">
+                                <div class="placeholder">Portrait</div>
+                            </div>
+                            <button type="button" id="uploadSplash" class="upload-btn">Upload Splash Image</button>
+                            <div class="color-picker-group">
+                                <label for="splashBgColor">Background Color:</label>
+                                <input type="color" id="splashBgColor" value="#ffffff">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-colors">
+                        <h3>Theme Colors</h3>
+                        <div class="color-row">
+                            <div class="color-group">
+                                <label for="primaryColor">Primary Color</label>
+                                <input type="color" id="primaryColor" value="#22c55e">
+                                <small>Toolbar/Header color</small>
+                            </div>
+                            <div class="color-group">
+                                <label for="statusBarColor">Status Bar Color</label>
+                                <input type="color" id="statusBarColor" value="#16a34a">
+                                <small>Top system icons area</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Native Features -->
+            <div class="wizard-step" id="wizardStep3">
+                <h2>Step 3: Native Features</h2>
+                <div class="form-section">
+                    <div class="feature-section">
+                        <h3>Navigation</h3>
+                        <div class="toggle-group">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="showNavBar">
+                                <span class="toggle-slider"></span>
+                                Show Navigation Bar
+                            </label>
+                            <small>Adds a native bottom toolbar</small>
+                        </div>
+                        <div class="toggle-group">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="pullToRefresh" checked>
+                                <span class="toggle-slider"></span>
+                                Enable Pull-to-Refresh
+                            </label>
+                            <small>Swipe down to reload page</small>
+                        </div>
+                    </div>
+
+                    <div class="feature-section">
+                        <h3>Connectivity</h3>
+                        <div class="toggle-group">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="offlineMode">
+                                <span class="toggle-slider"></span>
+                                Offline Mode
+                            </label>
+                            <small>Shows custom 'No Internet' screen</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="offlineMessage">Offline Error Message</label>
+                            <input type="text" id="offlineMessage" placeholder="Please check your internet connection">
+                        </div>
+                    </div>
+
+                    <div class="feature-section">
+                        <h3>Permissions</h3>
+                        <div class="permissions-grid">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="permCamera">
+                                <span class="checkmark"></span>
+                                Camera
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="permLocation">
+                                <span class="checkmark"></span>
+                                Location
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="permStorage">
+                                <span class="checkmark"></span>
+                                Storage
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="permMicrophone">
+                                <span class="checkmark"></span>
+                                Microphone
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="feature-section">
+                        <h3>Advanced</h3>
+                        <div class="form-group">
+                            <label for="userAgent">User Agent String</label>
+                            <input type="text" id="userAgent" placeholder="Optional, for advanced developers">
+                        </div>
+                        <div class="toggle-group">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="zoomControls">
+                                <span class="toggle-slider"></span>
+                                Zoom Controls
+                            </label>
+                            <small>Allow pinching to zoom</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Monetization -->
+            <div class="wizard-step" id="wizardStep4">
+                <h2>Step 4: Monetization (Optional)</h2>
+                <div class="form-section">
+                    <div class="toggle-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="enableAds">
+                            <span class="toggle-slider"></span>
+                            Enable AdMob Ads
+                        </label>
+                    </div>
+
+                    <div class="ads-config" id="adsConfig" style="display: none;">
+                        <div class="form-group">
+                            <label for="admobAppId">AdMob App ID</label>
+                            <input type="text" id="admobAppId" placeholder="ca-app-pub-xxxxxxxxxxxxxxxx~xxxxxxxxxx">
+                        </div>
+                        <div class="form-group">
+                            <label for="bannerAdUnit">Banner Ad Unit ID</label>
+                            <input type="text" id="bannerAdUnit" placeholder="ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx">
+                        </div>
+                        <div class="form-group">
+                            <label for="interstitialAdUnit">Interstitial Ad Unit ID</label>
+                            <input type="text" id="interstitialAdUnit" placeholder="ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx">
+                        </div>
+                        <div class="radio-group">
+                            <label>Banner Position:</label>
+                            <label class="radio-label">
+                                <input type="radio" name="bannerPosition" value="top">
+                                <span class="radio-mark"></span>
+                                Top
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="bannerPosition" value="bottom" checked>
+                                <span class="radio-mark"></span>
+                                Bottom
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="wizard-navigation">
+            <button id="wizardBack" class="nav-btn secondary" disabled>Back</button>
+            <button id="wizardNext" class="nav-btn primary">Next: Branding</button>
+        </div>
+    </div>
+
+    <!-- Build Screen -->
+    <div class="screen" id="buildScreen">
+        <header class="build-header">
+            <h2>Building Your App</h2>
+        </header>
+
+        <main class="build-content">
+            <div class="build-status">
+                <div class="progress-circle" id="buildProgress">
+                    <div class="progress-text">0%</div>
+                </div>
+                <div class="status-text" id="buildStatusText">Preparing build...</div>
+            </div>
+
+            <div class="build-log">
+                <div class="log-header">
+                    <span>Build Log</span>
+                    <button id="toggleLog" class="toggle-log-btn">Show Details</button>
+                </div>
+                <div class="log-content" id="logContent" style="display: none;">
+                    <div class="log-messages" id="logMessages"></div>
+                </div>
+            </div>
+
+            <div class="build-actions" id="buildActions" style="display: none;">
+                <button id="downloadApk" class="action-btn primary">Download APK</button>
+                <button id="shareApk" class="action-btn secondary">Share APK</button>
+                <button id="downloadKeystore" class="action-btn secondary">Download Keystore</button>
+            </div>
+
+            <div class="build-error" id="buildError" style="display: none;">
+                <div class="error-message" id="errorMessage"></div>
+                <button id="retryBuild" class="action-btn primary">Retry Build</button>
+            </div>
+        </main>
     </div>
 
     <script src="app.js"></script>
